@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_PATH=/app/data/variants.db
+      - UPLOAD_DIR=/app/data/uploads
+      - AGGREGATES_DIR=/app/data/aggregates
+    volumes:
+      - ./data:/app/data
+      - ./backend/app:/app/app
+    depends_on:
+      redis:
+        condition: service_healthy
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  worker:
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_PATH=/app/data/variants.db
+      - UPLOAD_DIR=/app/data/uploads
+    volumes:
+      - ./data:/app/data
+      - ./worker:/app
+    depends_on:
+      redis:
+        condition: service_healthy
+    command: celery -A celery_app worker --loglevel=info --concurrency=2
+
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    ports:
+      - "8050:8050"
+    environment:
+      - BACKEND_URL=http://backend:8000
+      - AGGREGATES_DIR=/app/data/aggregates
+    volumes:
+      - ./data/aggregates:/app/data/aggregates
+      - ./dashboard:/app
+    depends_on:
+      - backend
+    command: python app.py
+
+volumes:
+  redis_data:
