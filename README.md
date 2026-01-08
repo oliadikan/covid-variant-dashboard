@@ -126,8 +126,8 @@ pytest --cov=. --cov-report=html
 
 MIT License - See [LICENSE](LICENSE) file for details
 
-## Status
-🚧 In Development
+## 🚧 Status
+In Development
 
 ## 🤝 Contributing
 
@@ -135,6 +135,6 @@ This is a portfolio project, but suggestions and feedback are welcome! Please op
 
 ## 📧 Contact
 
-Your Name - olia.dikan@gmail.com
+Olga Dikan - olia.dikan@gmail.com
 
 Project Link: [https://github.com/oliadikan/covid-variant-dashboard](https://github.com/oliadikan/covid-variant-dashboard)
