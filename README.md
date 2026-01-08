@@ -23,7 +23,7 @@ This portfolio project demonstrates full-stack development skills combined with 
 ### Running with Docker
 ```bash
 # Clone the repository
-git clone <your-repo-url>
+git clone https://github.com/oliadikan/covid-variant-dashboard
 cd covid-variant-dashboard
 
 # Copy environment variables
@@ -137,4 +137,4 @@ This is a portfolio project, but suggestions and feedback are welcome! Please op
 
 Your Name - olia.dikan@gmail.com
 
-Project Link: [https://github.com/yourusername/covid-variant-dashboard](https://github.com/yourusername/covid-variant-dashboard)
+Project Link: [https://github.com/oliadikan/covid-variant-dashboard](https://github.com/oliadikan/covid-variant-dashboard)
