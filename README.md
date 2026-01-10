@@ -8,7 +8,7 @@ This portfolio project demonstrates full-stack development skills combined with 
 
 - **Async Processing**: FastAPI + Celery for responsive sequence analysis
 - **Interactive Dashboard**: Dash-based visualization interface
-- **Bioinformatics Pipeline**: K-mer indexing and sequence alignment
+- **Bioinformatics Pipeline**: K-mer indexing and sequence alignment using **BioPython** and **scikit-bio**
 - **Data Engineering**: Automated ETL from NCBI GenBank
 - **Containerization**: Complete Docker Compose deployment
 
@@ -16,9 +16,11 @@ This portfolio project demonstrates full-stack development skills combined with 
 
 ### Prerequisites
 
-- Docker & Docker Compose
-- Python 3.11+ (for local development)
-- 4GB RAM minimum
+- **Docker & Docker Compose** (Recommended)
+- **Python 3.11+** (For local development)
+- **Redis 7.0+** (Required for Celery task queue)
+- **NCBI API Key** (Optional, for automated data pipeline)
+- **4GB RAM minimum**
 
 ### Running with Docker
 ```bash
@@ -106,7 +108,9 @@ covid-variant-dashboard/
 
 ## 🧬 Data Sources
 
-Sequence data is sourced from **NCBI GenBank** (https://www.ncbi.nlm.nih.gov/genbank/).
+Sequence data is sourced from **NCBI GenBank** (https://www.ncbi.nlm.nih.gov/genbank/). 
+
+*Note: An NCBI API Key is recommended for the automated data pipeline to avoid rate-limiting.*
 
 **Disclaimer**: This tool is for educational and research purposes only. It is not a substitute for clinical diagnosis or public health surveillance systems.
 

@@ -4,7 +4,7 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
     volumes:
       - redis_data:/data
     healthcheck:
@@ -12,57 +12,70 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - covid_net
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "8000:8000"
-    environment:
-      - REDIS_URL=redis://redis:6379/0
-      - DATABASE_PATH=/app/data/variants.db
-      - UPLOAD_DIR=/app/data/uploads
-      - AGGREGATES_DIR=/app/data/aggregates
+      - "${BACKEND_PORT:-8000}:8000"
     volumes:
-      - ./data:/app/data
       - ./backend/app:/app/app
+      - ./data:/app/data
+    environment:
+      - REDIS_URL=${REDIS_URL}
+      - DATABASE_PATH=${DATABASE_PATH}
+      - UPLOAD_DIR=${UPLOAD_DIR}
+      - AGGREGATES_DIR=${AGGREGATES_DIR}
     depends_on:
       redis:
         condition: service_healthy
+    networks:
+      - covid_net
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
   worker:
     build:
       context: ./worker
       dockerfile: Dockerfile
-    environment:
-      - REDIS_URL=redis://redis:6379/0
-      - DATABASE_PATH=/app/data/variants.db
-      - UPLOAD_DIR=/app/data/uploads
     volumes:
-      - ./data:/app/data
       - ./worker:/app
+      - ./data:/app/data
+    environment:
+      - REDIS_URL=${REDIS_URL}
+      - DATABASE_PATH=${DATABASE_PATH}
+      - UPLOAD_DIR=${UPLOAD_DIR}
+      - C_FORCE_ROOT=true
     depends_on:
       redis:
         condition: service_healthy
-    command: celery -A celery_app worker --loglevel=info --concurrency=2
+    networks:
+      - covid_net
+    command: celery -A celery_app worker --loglevel=info
 
   dashboard:
     build:
       context: ./dashboard
       dockerfile: Dockerfile
     ports:
-      - "8050:8050"
-    environment:
-      - BACKEND_URL=http://backend:8000
-      - AGGREGATES_DIR=/app/data/aggregates
+      - "${DASHBOARD_PORT:-8050}:8050"
     volumes:
-      - ./data/aggregates:/app/data/aggregates
       - ./dashboard:/app
+      - ./data/aggregates:/app/data/aggregates
+    environment:
+      - BACKEND_URL=${BACKEND_URL}
+      - AGGREGATES_DIR=${AGGREGATES_DIR}
     depends_on:
       - backend
+    networks:
+      - covid_net
     command: python app.py
 
 volumes:
   redis_data:
+
+networks:
+  covid_net:
+    driver: bridge
