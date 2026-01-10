@@ -1,0 +1,37 @@
+# Combined requirements for local development
+# This file includes dependencies for backend, worker, dashboard, and data_pipeline
+
+# Backend & API
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+pydantic==2.5.3
+pydantic-settings==2.1.0
+python-multipart==0.0.6
+
+# Task Queue & Cache
+celery==5.3.4
+redis==5.0.1
+
+# Database & Data Processing
+sqlalchemy==2.0.25
+pandas==2.2.0
+pyarrow==15.0.0
+numpy==1.26.3
+
+# Bioinformatics
+biopython==1.83
+scikit-bio==0.5.9
+
+# Dashboard & Visualization
+dash==2.14.2
+dash-bootstrap-components==1.5.0
+plotly==5.18.0
+requests==2.31.0
+
+# Data Pipeline & Utilities
+tqdm==4.66.1
+tabulate==0.9.0
+
+# Testing
+pytest==7.4.4
+pytest-cov==4.1.0
